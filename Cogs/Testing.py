@@ -10,4 +10,5 @@ class Testing(commands.Cog):
         await ctx.send("Pong!")
 
 def setup(client):
+    print("Loading Testing cog.")
     client.add_cog(Testing(client))
