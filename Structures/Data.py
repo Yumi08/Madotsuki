@@ -1,7 +1,17 @@
+from enum import Enum
+
+class Commodities(Enum):
+    Coins=0
+    Points=1
+
+    def __str__(self):
+        return "%s" % self.name
+
 class BankAccount:
-    def __init__(self, name, balance):
+    def __init__(self, name, balance, commodity = Commodities.Coins):
         self.name = name
         self.balance = balance
+        self.commodity = commodity
 
 class UserAccount:
     def __init__(self):

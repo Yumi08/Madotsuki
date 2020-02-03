@@ -14,7 +14,6 @@ client = commands.Bot(command_prefix = os.getenv("PREFIX"))
 
 data = Data()
 bot_name = os.getenv("BOTNAME")
-currency_prefix = os.getenv("CURRENCYPREFIX")
 
 # Load data
 if os.path.exists("data.pkl"):
