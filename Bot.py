@@ -3,7 +3,7 @@ from discord.ext import commands, tasks
 from dotenv import load_dotenv
 import os
 import logging
-from Data import Data
+from Structures.Data import Data
 import pickle
 
 ## Begin setup
