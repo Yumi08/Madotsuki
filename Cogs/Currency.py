@@ -7,13 +7,16 @@ from Structures.Data import UserAccount, BankAccount
 class Currency(commands.Cog):
     def __init__(self, client):
         self.client = client
+
+    def __try_user(self, userid):
+        try:
+            data.user_accounts[userid]
+        except:
+            data.user_accounts[userid] = UserAccount()
     
     @commands.command(brief="Show your account statement.")
     async def statement(self, ctx):
-        try:
-            data.user_accounts[ctx.author.id]
-        except:
-            data.user_accounts[ctx.author.id] = UserAccount()
+        self.__try_user(ctx.author.id)
         
         accts = data.user_accounts[ctx.author.id].accounts
         o = ""
@@ -25,10 +28,7 @@ class Currency(commands.Cog):
 
     @commands.command(brief="Show someone else's account statement.")
     async def statement_t(self, ctx, user : discord.User):
-        try:
-            data.user_accounts[user.id]
-        except:
-            data.user_accounts[user.id] = UserAccount()
+        self.__try_user(user.id)
         
         accts = data.user_accounts[user.id].accounts
         o = ""
@@ -46,10 +46,7 @@ class Currency(commands.Cog):
 
     @commands.command(brief="Open an account.")
     async def open(self, ctx, name):
-        try:
-            data.user_accounts[ctx.author.id]
-        except:
-            data.user_accounts[ctx.author.id] = UserAccount()
+        self.__try_user(ctx.author.id)
         
         accts = data.user_accounts[ctx.author.id].accounts
         accts.append(BankAccount(name, 0))
@@ -58,10 +55,7 @@ class Currency(commands.Cog):
 
     @commands.command(brief="Close an account")
     async def close(self, ctx, num : int):
-        try:
-            data.user_accounts[ctx.author.id]
-        except:
-            data.user_accounts[ctx.author.id] = UserAccount()
+        self.__try_user(ctx.author.id)
         
         accts = data.user_accounts[ctx.author.id].accounts
 
@@ -77,10 +71,7 @@ class Currency(commands.Cog):
 
     @commands.command(brief="Transfer between two of your own accounts.")
     async def transfer(self, ctx, num1 : int, num2 : int, amt : int):
-        try:
-            data.user_accounts[ctx.author.id]
-        except:
-            data.user_accounts[ctx.author.id] = UserAccount()
+        self.__try_user(ctx.author.id)
         
         accts = data.user_accounts[ctx.author.id].accounts
         o = ""
@@ -106,15 +97,8 @@ class Currency(commands.Cog):
 
     @commands.command(brief="Send money to another person")
     async def send(self, ctx, acct_num : int, receiver : discord.User, amt : int):
-        try:
-            data.user_accounts[ctx.author.id]
-        except:
-            data.user_accounts[ctx.author.id] = UserAccount()
-
-        try:
-            data.user_accounts[receiver.id]
-        except:
-            data.user_accounts[receiver.id] = UserAccount()
+        self.__try_user(ctx.author.id)
+        self.__try_user(receiver.id)
         
         accts = data.user_accounts[ctx.author.id].accounts
         recv_accts = data.user_accounts[receiver.id].accounts
@@ -138,10 +122,7 @@ class Currency(commands.Cog):
     
     @commands.command(brief="Set your banking info to be public.")
     async def public_bank(self, ctx):
-        try:
-            data.user_accounts[ctx.author.id]
-        except:
-            data.user_accounts[ctx.author.id] = UserAccount()
+        self.__try_user(ctx.author.id)
         
         acct = data.user_accounts[ctx.author.id]
 
@@ -151,10 +132,7 @@ class Currency(commands.Cog):
 
     @commands.command(brief="Set your banking info to be private.")
     async def private_bank(self, ctx):
-        try:
-            data.user_accounts[ctx.author.id]
-        except:
-            data.user_accounts[ctx.author.id] = UserAccount()
+        self.__try_user(ctx.author.id)
         
         acct = data.user_accounts[ctx.author.id]
 
