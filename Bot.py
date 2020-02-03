@@ -9,6 +9,9 @@ logging.basicConfig(level=logging.INFO)
 
 client = commands.Bot(command_prefix = "$")
 
+def is_developer(ctx):
+    return ctx.author.id == int(os.getenv("OWNERID"))
+
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
@@ -21,16 +24,19 @@ async def on_command_error(ctx, error):
         await ctx.send("Error!")
 
 @client.command()
+@commands.check(is_developer)
 async def load(ctx, extension):
     client.load_extension(f"Cogs.{extension}")
     await ctx.send(f"Loaded {extension}.")
 
 @client.command()
+@commands.check(is_developer)
 async def unload(ctx, extension):
     client.unload_extension(f"Cogs.{extension}")
     await ctx.send(f"Unloaded {extension}.")
 
 @client.command()
+@commands.check(is_developer)
 async def reload(ctx, extension):
     client.unload_extension(f"Cogs.{extension}")
     client.load_extension(f"Cogs.{extension}")
