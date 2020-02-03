@@ -10,7 +10,7 @@ import pickle
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
-client = commands.Bot(command_prefix = "$")
+client = commands.Bot(command_prefix = os.getenv("PREFIX"))
 
 data = Data()
 bot_name = os.getenv("BOTNAME")
@@ -50,7 +50,7 @@ async def on_command_error(ctx, error):
 @tasks.loop(minutes=15)
 async def autosave():
     print("Autosaving...")
-    
+
     # Save data
     with open("data.pkl", "wb") as output:
         pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)

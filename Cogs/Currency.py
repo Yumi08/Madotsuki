@@ -17,14 +17,14 @@ class Currency(commands.Cog):
             data.user_accounts[userid] = UserAccount()
             if userid == self.client.user.id:
                 data.user_accounts[self.client.user.id].accounts = [BankAccount("Reserve", 1000000)]
-    
+
     @commands.command(brief="Show your account statement.")
     async def statement(self, ctx):
         self.__try_user(ctx.author.id)
-        
+
         accts = data.user_accounts[ctx.author.id].accounts
         o = ""
-        
+
         for i in range(len(accts)):
             o += f"{i}. - {accts[i].name} - {currency_prefix}{accts[i].balance:,}\n"
 
@@ -33,14 +33,14 @@ class Currency(commands.Cog):
     @commands.command(brief="Show someone else's account statement.")
     async def statement_t(self, ctx, user : discord.User):
         self.__try_user(user.id)
-        
+
         accts = data.user_accounts[user.id].accounts
         o = ""
 
         if data.user_accounts[user.id].accounts_public == False:
             await ctx.send(f"{user.name}\'s accounts are private!")
             return
-        
+
         for i in range(len(accts)):
             o += f"{i}. - {accts[i].name} - {currency_prefix}{accts[i].balance:,}\n"
 
@@ -49,7 +49,7 @@ class Currency(commands.Cog):
     @commands.command(brief="Open an account.")
     async def open(self, ctx, name):
         self.__try_user(ctx.author.id)
-        
+
         accts = data.user_accounts[ctx.author.id].accounts
         accts.append(BankAccount(name, 0))
 
@@ -58,7 +58,7 @@ class Currency(commands.Cog):
     @commands.command(brief="Close an account")
     async def close(self, ctx, num : int):
         self.__try_user(ctx.author.id)
-        
+
         accts = data.user_accounts[ctx.author.id].accounts
 
         if num >= len(accts):
@@ -74,7 +74,7 @@ class Currency(commands.Cog):
     @commands.command(brief="Transfer between two of your own accounts.")
     async def transfer(self, ctx, num1 : int, num2 : int, amt : int):
         self.__try_user(ctx.author.id)
-        
+
         accts = data.user_accounts[ctx.author.id].accounts
         o = ""
         acc1_orig = accts[num1].balance
@@ -87,7 +87,7 @@ class Currency(commands.Cog):
         if accts[num1].balance < amt:
             await ctx.send(f"Insufficient balance in {accts[num1].name}!")
             return
-        
+
         accts[num1].balance -= amt
         accts[num2].balance += amt
 
@@ -101,7 +101,7 @@ class Currency(commands.Cog):
     async def send(self, ctx, acct_num : int, receiver : discord.User, amt : int):
         self.__try_user(ctx.author.id)
         self.__try_user(receiver.id)
-        
+
         accts = data.user_accounts[ctx.author.id].accounts
         recv_accts = data.user_accounts[receiver.id].accounts
         o = ""
@@ -111,7 +111,7 @@ class Currency(commands.Cog):
         if accts[acct_num].balance < amt:
             await ctx.send(f"Insufficient balance in {accts[acct_num].name}!")
             return
-        
+
         accts[acct_num].balance -= amt
         recv_accts[0].balance += amt
 
@@ -121,11 +121,11 @@ class Currency(commands.Cog):
         o += f"Successfully sent {currency_prefix}{amt:,} to {receiver.name}!"
 
         await ctx.send(o)
-    
+
     @commands.command(brief="Set your banking info to be public.")
     async def public_bank(self, ctx):
         self.__try_user(ctx.author.id)
-        
+
         acct = data.user_accounts[ctx.author.id]
 
         acct.accounts_public = True
@@ -135,13 +135,13 @@ class Currency(commands.Cog):
     @commands.command(brief="Set your banking info to be private.")
     async def private_bank(self, ctx):
         self.__try_user(ctx.author.id)
-        
+
         acct = data.user_accounts[ctx.author.id]
 
         acct.accounts_public = False
 
         await ctx.send("Set your bank to be private!")
-    
+
     @commands.command(brief="Flip a coin to win big!")
     async def flip(self, ctx, acct_num : int, amt : int, side : str):
         self.__try_user(ctx.author.id)
@@ -182,7 +182,7 @@ class Currency(commands.Cog):
             o += "Sorry, you lost."
             user_accts[acct_num].balance -= amt
             bot_accts[0].balance += amt
-        
+
         await ctx.send(o)
 
 
