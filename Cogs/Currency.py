@@ -5,6 +5,7 @@ from Bot import data, bot_name
 from Structures.Data import UserAccount, BankAccount, Commodities
 
 import random
+import itertools
 
 class Currency(commands.Cog):
     def __init__(self, client):
@@ -24,9 +25,34 @@ class Currency(commands.Cog):
 
         accts = data.user_accounts[ctx.author.id].accounts
         o = ""
+        net = {}
 
         for i in range(len(accts)):
-            o += f"{i}. - {accts[i].name} - {accts[i].balance:,} {accts[i].commodity}\n"
+            flags = ""
+
+            try:
+                net[accts[i].commodity]
+            except:
+                net[accts[i].commodity] = 0
+
+            net[accts[i].commodity] += accts[i].balance
+
+            if not accts[i].erasable:
+                flags += "i"
+
+            if not accts[i].erasable: # or accts[i].something or accts[i].something_else    etc...
+                o += f"{i}. - {accts[i].name} " + "{" + f"+{flags}" + "}" + f" - {accts[i].balance:,} {accts[i].commodity}\n"
+            else:
+                o += f"{i}. - {accts[i].name} - {accts[i].balance:,} {accts[i].commodity}\n"
+
+        for _ in itertools.repeat(None, len(max(o.splitlines(), key=len))):
+            o += "-"
+
+        o += "\nNet: "
+        for k,v in net.items():
+            o += f"[{k} - {v}]"
+
+        o += "\nFLAGS: +i - Indestructible"
 
         await ctx.send(o)
 
