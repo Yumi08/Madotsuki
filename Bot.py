@@ -1,11 +1,12 @@
 import discord 
-from discord.ext import commands
+from discord.ext import commands, tasks
 from dotenv import load_dotenv
 import os
 import logging
 from Data import Data
 import pickle
 
+## Begin setup
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
@@ -17,10 +18,17 @@ data = Data()
 if os.path.exists("data.pkl"):
     with open("data.pkl", "rb") as file:
         data = pickle.load(file)
-
+## End setup
 
 def is_developer(ctx):
     return ctx.author.id == int(os.getenv("OWNERID"))
+
+## Begin events
+@client.event
+async def on_ready():
+    autosave.start()
+    await client.change_presence(activity=discord.Game("I love you."))
+    print("Bot ready.")
 
 @client.event
 async def on_command_error(ctx, error):
@@ -32,7 +40,19 @@ async def on_command_error(ctx, error):
         await ctx.send("Check error!")
     else:
         await ctx.send("Error!")
+## End events
 
+## Begin tasks
+@tasks.loop(minutes=15)
+async def autosave():
+    print("Autosaving...")
+    
+    # Save data
+    with open("data.pkl", "wb") as output:
+        pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
+## End tasks
+
+## Begin commands
 @client.command()
 @commands.check(is_developer)
 async def load(ctx, extension):
@@ -55,19 +75,19 @@ async def reload(ctx, extension):
 @commands.check(is_developer)
 async def logout(ctx):
     await ctx.send("Logging out...")
-    await client.logout()
+
+    # Save data
     with open("data.pkl", "wb") as output:
         pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
+    await client.logout()
+## End commands
+
+## Begin finalization
 print("Loading cogs.")
 for filename in os.listdir("./Cogs"):
     if filename.endswith(".py"):
         client.load_extension(f"Cogs.{filename[:-3]}")
 
-@client.event
-async def on_ready():
-    print("Bot ready.")
-    await client.change_presence(activity=discord.Game("I love you."))
-
 client.run(os.getenv("TOKEN"))
-
+## End finalization
