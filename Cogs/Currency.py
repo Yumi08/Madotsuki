@@ -13,6 +13,8 @@ class Currency(commands.Cog):
             data.user_accounts[userid]
         except:
             data.user_accounts[userid] = UserAccount()
+            if userid == self.client.user.id:
+                data.user_accounts[self.client.user.id].accounts = [BankAccount("Reserve", 50000)]
     
     @commands.command(brief="Show your account statement.")
     async def statement(self, ctx):
