@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from Bot import data
+from Bot import data, currency_prefix
 from Structures.Data import UserAccount, BankAccount
 
 class Currency(commands.Cog):
@@ -24,7 +24,7 @@ class Currency(commands.Cog):
         o = ""
         
         for i in range(len(accts)):
-            o += f"{i}. - {accts[i].name} - {accts[i].balance}\n"
+            o += f"{i}. - {accts[i].name} - {currency_prefix}{accts[i].balance}\n"
 
         await ctx.send(o)
 
@@ -40,7 +40,7 @@ class Currency(commands.Cog):
             return
         
         for i in range(len(accts)):
-            o += f"{i}. - {accts[i].name} - {accts[i].balance}\n"
+            o += f"{i}. - {accts[i].name} - {currency_prefix}{accts[i].balance}\n"
 
         await ctx.send(o)
         
@@ -91,8 +91,8 @@ class Currency(commands.Cog):
         accts[num1].balance -= amt
         accts[num2].balance += amt
 
-        o += f"{accts[num1].name} : {acc1_orig} -> {accts[num1].balance}\n"
-        o += f"{accts[num2].name} : {acc2_orig} -> {accts[num2].balance}\n"
+        o += f"{accts[num1].name} : {currency_prefix}{acc1_orig} -> {currency_prefix}{accts[num1].balance}\n"
+        o += f"{accts[num2].name} : {currency_prefix}{acc2_orig} -> {currency_prefix}{accts[num2].balance}\n"
         o += "Transfer successful!"
 
         await ctx.send(o)
@@ -115,10 +115,10 @@ class Currency(commands.Cog):
         accts[acct_num].balance -= amt
         recv_accts[0].balance += amt
 
-        o += f"Your {accts[acct_num].name} : {acct_orig} -> {accts[acct_num].balance}\n"
+        o += f"Your {accts[acct_num].name} : {currency_prefix}{acct_orig} -> {currency_prefix}{accts[acct_num].balance}\n"
         if data.user_accounts[receiver.id].accounts_public == True:
-            o += f"Their {recv_accts[0].name} : {recv_acct_orig} -> {recv_accts[0].balance}\n"
-        o += f"Successfully sent {amt} to {receiver.name}!"
+            o += f"Their {recv_accts[0].name} : {currency_prefix}{recv_acct_orig} -> {currency_prefix}{recv_accts[0].balance}\n"
+        o += f"Successfully sent {currency_prefix}{amt} to {receiver.name}!"
 
         await ctx.send(o)
     
