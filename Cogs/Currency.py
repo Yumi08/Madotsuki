@@ -8,10 +8,13 @@ class Currency(commands.Cog):
         self.client = client
 
     @commands.command()
+    async def statement(self, ctx):
+        await ctx.send(data.user_accounts[str(ctx.author.id)])
+
+    @commands.command()
     async def setnum(self, ctx, num : int):
-        original_num = data.num
-        data.num = num
-        await ctx.send(f"Setting num from {original_num} to {data.num}")
+        data.user_accounts[str(ctx.author.id)] = num
+        await ctx.send("Done!")
 
 def setup(client):
     print("Loading Currency cog.")

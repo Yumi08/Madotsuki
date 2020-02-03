@@ -1,3 +1,3 @@
 class Data:
     def __init__(self):
-        self.num = 0
+        self.user_accounts = {}

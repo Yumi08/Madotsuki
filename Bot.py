@@ -40,6 +40,8 @@ async def on_command_error(ctx, error):
         await ctx.send("Check error!")
     else:
         await ctx.send("Error!")
+
+    await ctx.send(error)
 ## End events
 
 ## Begin tasks
