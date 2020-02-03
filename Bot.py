@@ -3,11 +3,21 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import os
 import logging
+from Data import Data
+import pickle
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
 client = commands.Bot(command_prefix = "$")
+
+data = Data()
+
+# Load data
+if os.path.exists("data.pkl"):
+    with open("data.pkl", "rb") as file:
+        data = pickle.load(file)
+
 
 def is_developer(ctx):
     return ctx.author.id == int(os.getenv("OWNERID"))
@@ -38,9 +48,16 @@ async def unload(ctx, extension):
 @client.command()
 @commands.check(is_developer)
 async def reload(ctx, extension):
-    client.unload_extension(f"Cogs.{extension}")
-    client.load_extension(f"Cogs.{extension}")
+    client.reload_extension(f"Cogs.{extension}")
     await ctx.send (f"Reloaded {extension}.")
+
+@client.command()
+@commands.check(is_developer)
+async def logout(ctx):
+    await ctx.send("Logging out...")
+    await client.logout()
+    with open("data.pkl", "wb") as output:
+        pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
 print("Loading cogs.")
 for filename in os.listdir("./Cogs"):
