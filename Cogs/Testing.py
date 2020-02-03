@@ -5,7 +5,7 @@ class Testing(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command()
+    @commands.command(brief="Test command.")
     async def ping(self, ctx):
         await ctx.send("Pong!")
 

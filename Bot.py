@@ -55,25 +55,25 @@ async def autosave():
 ## End tasks
 
 ## Begin commands
-@client.command()
+@client.command(brief="DEVELOPER ONLY: Load cog.")
 @commands.check(is_developer)
 async def load(ctx, extension):
     client.load_extension(f"Cogs.{extension}")
     await ctx.send(f"Loaded {extension}.")
 
-@client.command()
+@client.command(brief="DEVELOPER ONLY: Unload cog.")
 @commands.check(is_developer)
 async def unload(ctx, extension):
     client.unload_extension(f"Cogs.{extension}")
     await ctx.send(f"Unloaded {extension}.")
 
-@client.command()
+@client.command(brief="DEVELOPER ONLY: Reload cog.")
 @commands.check(is_developer)
 async def reload(ctx, extension):
     client.reload_extension(f"Cogs.{extension}")
     await ctx.send (f"Reloaded {extension}.")
 
-@client.command()
+@client.command(brief="DEVELOPER ONLY: Stop bot.")
 @commands.check(is_developer)
 async def logout(ctx):
     await ctx.send("Logging out...")

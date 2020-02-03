@@ -8,7 +8,7 @@ class Currency(commands.Cog):
     def __init__(self, client):
         self.client = client
     
-    @commands.command()
+    @commands.command(brief="Show your account statement.")
     async def statement(self, ctx):
         try:
             data.user_accounts[ctx.author.id]
@@ -23,7 +23,7 @@ class Currency(commands.Cog):
 
         await ctx.send(o)
 
-    @commands.command()
+    @commands.command(brief="Show someone else's account statement.")
     async def statement_t(self, ctx, user : discord.User):
         try:
             data.user_accounts[user.id]
@@ -44,7 +44,7 @@ class Currency(commands.Cog):
         
 
 
-    @commands.command()
+    @commands.command(brief="Open an account.")
     async def open(self, ctx, name):
         try:
             data.user_accounts[ctx.author.id]
@@ -56,7 +56,7 @@ class Currency(commands.Cog):
 
         await ctx.send(f"Created account: {name}.")
 
-    @commands.command()
+    @commands.command(brief="Close an account")
     async def close(self, ctx, num : int):
         try:
             data.user_accounts[ctx.author.id]
@@ -75,7 +75,7 @@ class Currency(commands.Cog):
             await ctx.send(f"Deleting {accts[num].name}...")
             del accts[num]
 
-    @commands.command()
+    @commands.command(brief="Transfer between two of your own accounts.")
     async def transfer(self, ctx, num1 : int, num2 : int, amt : int):
         try:
             data.user_accounts[ctx.author.id]
@@ -104,7 +104,7 @@ class Currency(commands.Cog):
 
         await ctx.send(o)
 
-    @commands.command()
+    @commands.command(brief="Send money to another person")
     async def send(self, ctx, acct_num : int, receiver : discord.User, amt : int):
         try:
             data.user_accounts[ctx.author.id]
@@ -136,7 +136,7 @@ class Currency(commands.Cog):
 
         await ctx.send(o)
     
-    @commands.command()
+    @commands.command(brief="Set your banking info to be public.")
     async def public_bank(self, ctx):
         try:
             data.user_accounts[ctx.author.id]
@@ -149,7 +149,7 @@ class Currency(commands.Cog):
 
         await ctx.send("Set your bank to be public!")
 
-    @commands.command()
+    @commands.command(brief="Set your banking info to be private.")
     async def private_bank(self, ctx):
         try:
             data.user_accounts[ctx.author.id]
