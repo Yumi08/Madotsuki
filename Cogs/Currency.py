@@ -63,8 +63,8 @@ class Currency(commands.Cog):
 
         if num >= len(accts):
             await ctx.send("Out of range!")
-        elif num == 0:
-            await ctx.send("Cannot delete Inbound account.")
+        elif not accts[num].erasable:
+            await ctx.send(f"Cannot delete {accts[num].name} account.")
         elif accts[num].balance != 0:
             await ctx.send("Cannot delete account with more than 0 balance.")
         else:
