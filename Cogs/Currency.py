@@ -24,6 +24,27 @@ class Currency(commands.Cog):
         await ctx.send(o)
 
     @commands.command()
+    async def statement_t(self, ctx, user : discord.User):
+        try:
+            data.user_accounts[user.id]
+        except:
+            data.user_accounts[user.id] = UserAccount()
+        
+        accts = data.user_accounts[user.id].accounts
+        o = ""
+
+        if data.user_accounts[user.id].accounts_public == False:
+            await ctx.send(f"{user.name}\'s accounts are private!")
+            return
+        
+        for i in range(len(accts)):
+            o += f"{i}. - {accts[i].name} - {accts[i].balance}\n"
+
+        await ctx.send(o)
+        
+
+
+    @commands.command()
     async def open(self, ctx, name):
         try:
             data.user_accounts[ctx.author.id]
@@ -66,6 +87,10 @@ class Currency(commands.Cog):
         acc1_orig = accts[num1].balance
         acc2_orig = accts[num2].balance
 
+        if num2 == 0:
+            await ctx.send("Cannot transfer into Inbound account.")
+            return
+
         if accts[num1].balance < amt:
             await ctx.send(f"Insufficient balance in {accts[num1].name}!")
             return
@@ -78,6 +103,64 @@ class Currency(commands.Cog):
         o += "Transfer successful!"
 
         await ctx.send(o)
+
+    @commands.command()
+    async def send(self, ctx, acct_num : int, receiver : discord.User, amt : int):
+        try:
+            data.user_accounts[ctx.author.id]
+        except:
+            data.user_accounts[ctx.author.id] = UserAccount()
+
+        try:
+            data.user_accounts[receiver.id]
+        except:
+            data.user_accounts[receiver.id] = UserAccount()
+        
+        accts = data.user_accounts[ctx.author.id].accounts
+        recv_accts = data.user_accounts[receiver.id].accounts
+        o = ""
+        acct_orig = accts[acct_num].balance
+        recv_acct_orig = recv_accts[0].balance
+
+        if accts[acct_num].balance < amt:
+            await ctx.send(f"Insufficient balance in {accts[acct_num].name}!")
+            return
+        
+        accts[acct_num].balance -= amt
+        recv_accts[0].balance += amt
+
+        o += f"Your {accts[acct_num].name} : {acct_orig} -> {accts[acct_num].balance}\n"
+        if data.user_accounts[receiver.id].accounts_public == True:
+            o += f"Their {recv_accts[0].name} : {recv_acct_orig} -> {recv_accts[0].balance}\n"
+        o += f"Successfully sent {amt} to {receiver.name}!"
+
+        await ctx.send(o)
+    
+    @commands.command()
+    async def public_bank(self, ctx):
+        try:
+            data.user_accounts[ctx.author.id]
+        except:
+            data.user_accounts[ctx.author.id] = UserAccount()
+        
+        acct = data.user_accounts[ctx.author.id]
+
+        acct.accounts_public = True
+
+        await ctx.send("Set your bank to be public!")
+
+    @commands.command()
+    async def private_bank(self, ctx):
+        try:
+            data.user_accounts[ctx.author.id]
+        except:
+            data.user_accounts[ctx.author.id] = UserAccount()
+        
+        acct = data.user_accounts[ctx.author.id]
+
+        acct.accounts_public = False
+
+        await ctx.send("Set your bank to be private!")
 
 def setup(client):
     print("Loading Currency cog.")
