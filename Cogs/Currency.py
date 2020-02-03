@@ -26,7 +26,7 @@ class Currency(commands.Cog):
         o = ""
         
         for i in range(len(accts)):
-            o += f"{i}. - {accts[i].name} - {currency_prefix}{accts[i].balance}\n"
+            o += f"{i}. - {accts[i].name} - {currency_prefix}{accts[i].balance:,}\n"
 
         await ctx.send(o)
 
@@ -42,7 +42,7 @@ class Currency(commands.Cog):
             return
         
         for i in range(len(accts)):
-            o += f"{i}. - {accts[i].name} - {currency_prefix}{accts[i].balance}\n"
+            o += f"{i}. - {accts[i].name} - {currency_prefix}{accts[i].balance:,}\n"
 
         await ctx.send(o)
 
@@ -91,8 +91,8 @@ class Currency(commands.Cog):
         accts[num1].balance -= amt
         accts[num2].balance += amt
 
-        o += f"{accts[num1].name} : {currency_prefix}{acc1_orig} -> {currency_prefix}{accts[num1].balance}\n"
-        o += f"{accts[num2].name} : {currency_prefix}{acc2_orig} -> {currency_prefix}{accts[num2].balance}\n"
+        o += f"{accts[num1].name} : {currency_prefix}{acc1_orig:,} -> {currency_prefix}{accts[num1].balance:,}\n"
+        o += f"{accts[num2].name} : {currency_prefix}{acc2_orig:,} -> {currency_prefix}{accts[num2].balance:,}\n"
         o += "Transfer successful!"
 
         await ctx.send(o)
@@ -115,10 +115,10 @@ class Currency(commands.Cog):
         accts[acct_num].balance -= amt
         recv_accts[0].balance += amt
 
-        o += f"Your {accts[acct_num].name} : {currency_prefix}{acct_orig} -> {currency_prefix}{accts[acct_num].balance}\n"
+        o += f"Your {accts[acct_num].name} : {currency_prefix}{acct_orig:,} -> {currency_prefix}{accts[acct_num].balance:,}\n"
         if data.user_accounts[receiver.id].accounts_public == True:
-            o += f"Their {recv_accts[0].name} : {currency_prefix}{recv_acct_orig} -> {currency_prefix}{recv_accts[0].balance}\n"
-        o += f"Successfully sent {currency_prefix}{amt} to {receiver.name}!"
+            o += f"Their {recv_accts[0].name} : {currency_prefix}{recv_acct_orig:,} -> {currency_prefix}{recv_accts[0].balance:,}\n"
+        o += f"Successfully sent {currency_prefix}{amt:,} to {receiver.name}!"
 
         await ctx.send(o)
     
@@ -142,7 +142,7 @@ class Currency(commands.Cog):
 
         await ctx.send("Set your bank to be private!")
     
-    @commands.command()
+    @commands.command(brief="Flip a coin to win big!")
     async def flip(self, ctx, acct_num : int, amt : int, side : str):
         self.__try_user(ctx.author.id)
         self.__try_user(self.client.user.id)
@@ -175,7 +175,7 @@ class Currency(commands.Cog):
             o += "Tails!\n"
 
         if choice == result:
-            o += f"You won {amt} into your {user_accts[acct_num].name} account!"
+            o += f"You won {currency_prefix}{amt:,} into your {user_accts[acct_num].name} account!"
             user_accts[acct_num].balance += amt
             bot_accts[0].balance -= amt
         else:
