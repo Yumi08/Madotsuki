@@ -1,8 +1,10 @@
 import discord
 from discord.ext import commands
 
-from Bot import data, currency_prefix
+from Bot import data, currency_prefix, bot_name
 from Structures.Data import UserAccount, BankAccount
+
+import random
 
 class Currency(commands.Cog):
     def __init__(self, client):
@@ -14,7 +16,7 @@ class Currency(commands.Cog):
         except:
             data.user_accounts[userid] = UserAccount()
             if userid == self.client.user.id:
-                data.user_accounts[self.client.user.id].accounts = [BankAccount("Reserve", 50000)]
+                data.user_accounts[self.client.user.id].accounts = [BankAccount("Reserve", 1000000)]
     
     @commands.command(brief="Show your account statement.")
     async def statement(self, ctx):
@@ -43,8 +45,6 @@ class Currency(commands.Cog):
             o += f"{i}. - {accts[i].name} - {currency_prefix}{accts[i].balance}\n"
 
         await ctx.send(o)
-        
-
 
     @commands.command(brief="Open an account.")
     async def open(self, ctx, name):
@@ -141,6 +141,50 @@ class Currency(commands.Cog):
         acct.accounts_public = False
 
         await ctx.send("Set your bank to be private!")
+    
+    @commands.command()
+    async def flip(self, ctx, acct_num : int, amt : int, side : str):
+        self.__try_user(ctx.author.id)
+        self.__try_user(self.client.user.id)
+
+        user_accts = data.user_accounts[ctx.author.id].accounts
+        bot_accts = data.user_accounts[self.client.user.id].accounts
+        o = ""
+
+        choice = False
+        result = bool(random.getrandbits(1))
+
+        if side.lower() == "heads" or side.lower() == "h":
+            choice = True
+        elif side.lower() == "tails" or side.lower() == "t":
+            choice = False
+        else:
+            await ctx.send("Please say either \"Heads\" or \"Tails\"!")
+            return
+
+        if user_accts[acct_num].balance < amt:
+            await ctx.send(f"Insufficient balance in {user_accts[acct_num].name}!")
+            return
+        if bot_accts[0].balance < amt:
+            await ctx.send(f"Insufficient balance in {bot_name}\'s reserve!")
+            return
+
+        if choice == True:
+            o += "Heads!\n"
+        else:
+            o += "Tails!\n"
+
+        if choice == result:
+            o += f"You won {amt} into your {user_accts[acct_num].name} account!"
+            user_accts[acct_num].balance += amt
+            bot_accts[0].balance -= amt
+        else:
+            o += "Sorry, you lost."
+            user_accts[acct_num].balance -= amt
+            bot_accts[0].balance += amt
+        
+        await ctx.send(o)
+
 
 def setup(client):
     print("Loading Currency cog.")

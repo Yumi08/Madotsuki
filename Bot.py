@@ -13,6 +13,7 @@ logging.basicConfig(level=logging.INFO)
 client = commands.Bot(command_prefix = "$")
 
 data = Data()
+bot_name = os.getenv("BOTNAME")
 currency_prefix = os.getenv("CURRENCYPREFIX")
 
 # Load data

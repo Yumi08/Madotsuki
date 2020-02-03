@@ -5,7 +5,7 @@ class BankAccount:
 
 class UserAccount:
     def __init__(self):
-        self.accounts = [BankAccount("Inbound", 0), BankAccount("Default", 500)]
+        self.accounts = [BankAccount("Inbound", 0), BankAccount("Default", 1000)]
         self.accounts_public = True
 
 class Data:
